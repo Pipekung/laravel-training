@@ -1,7 +1,8 @@
 @if(session()->get('success'))
 <div class="alert alert-success mb-0">
     {{ session()->get('success') }}
-</div><br />
+</div>
+<br />
 @endif
 <a href="{{ route('product.create') }}" class="btn btn-primary btn-lg mb-3">Create</a>
 <!-- <div class="row">

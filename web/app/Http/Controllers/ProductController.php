@@ -19,17 +19,29 @@ class ProductController extends Controller
         $waiting_amount = Product::select('amount')->where('status', '=', 'Waiting')->sum('amount');
         $processing_amount = Product::select('amount')->where('status', '=', 'Processing')->sum('amount');
         $instock_amount = Product::select('amount')->where('status', '=', 'In Stock')->sum('amount');
-        $waiting_price = Product::select(DB::raw('price * amount as price'))->where('status', '=', 'Waiting')->first();
-        $processing_price = Product::select(DB::raw('price * amount as price'))->where('status', '=', 'Processing')->first();
-        $instock_price = Product::select(DB::raw('price * amount as price'))->where('status', '=', 'In Stock')->first();
+        $waiting_price = Product::select(DB::raw('price * amount as price'))->where('status', '=', 'Waiting')->get();
+        $waiting_price_sum = 0;
+        foreach($waiting_price as $v) {
+            $waiting_price_sum += $v->price;
+        }
+        $processing_price = Product::select(DB::raw('price * amount as price'))->where('status', '=', 'Processing')->get();
+        $processing_price_sum = 0;
+        foreach($processing_price as $v) {
+            $processing_price_sum += $v->price;
+        }
+        $instock_price = Product::select(DB::raw('price * amount as price'))->where('status', '=', 'In Stock')->get();
+        $instock_price_sum = 0;
+        foreach($instock_price as $v) {
+            $instock_price_sum += $v->price;
+        }
         return view('product/index', [
             'products' => $products,
             'waiting_amount' => $waiting_amount,
             'processing_amount' => $processing_amount,
             'instock_amount' => $instock_amount,
-            'waiting_price' => $waiting_price === null ? 0 : $waiting_price->price,
-            'processing_price' => $processing_price === null ? 0 : $processing_price->price,
-            'instock_price' => $instock_price === null ? 0 : $instock_price->price,
+            'waiting_price' => $waiting_price_sum,
+            'processing_price' => $processing_price_sum,
+            'instock_price' => $instock_price_sum,
         ]);
     }
 
